@@ -5,43 +5,56 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) throws FileNotFoundException {
 
-        ListaEncadeada listaEncadeada = new ListaEncadeada();
+        ListaEncadeada lista1 = new ListaEncadeada();
+        processarArquivo("src/arq.txt", lista1);
 
-        File file = new File("src/arq.txt");
-        Scanner scanner = new Scanner(file);
+        ListaEncadeada lista2 = new ListaEncadeada();
+        processarArquivo("src/arq1.txt", lista2);
+    }
 
-        String initialList = scanner.nextLine();
-        String[] valores = initialList.split(" ");
-        for (String valor : valores) {
-            listaEncadeada.inserirNoFinal(Integer.parseInt(valor));
-        }
+    public static void processarArquivo(String nomeArquivo, ListaEncadeada listaEncadeada) {
+        try {
+            File file = new File(nomeArquivo);
+            Scanner scanner = new Scanner(file);
 
-        int numAcoes = Integer.parseInt(scanner.nextLine());
+            String[] numerosIniciais = scanner.nextLine().trim().split("\\s+");
+            for (String numero : numerosIniciais) {
+                listaEncadeada.inserirNoFinal(Integer.parseInt(numero));
+            }
 
-        for (int i = 0; i < numAcoes; i++) {
-            String line = scanner.nextLine();
-            String[] parts = line.split(" ");
+            int totalEntradas = Integer.parseInt(scanner.nextLine().trim());
 
-            if (parts.length >= 3) {
-                String nomeAcao = parts[0];
-                int numero = Integer.parseInt(parts[1]);
-                int posicao = Integer.parseInt(parts[2]);
+            for (int i = 0; i < totalEntradas; i++) {
+                String linha = scanner.nextLine().trim();
+                String[] comando = linha.split("\\s+");
 
-                if (nomeAcao.equals("A")) {
+                if (comando.length < 2) {
+                    System.out.println("Comando inválido: " + linha);
+                    continue;
+                }
+
+                String nomeAcao = comando[0];
+                int numero = Integer.parseInt(comando[1]);
+
+                if (nomeAcao.equals("A") && comando.length == 3) {
+                    int posicao = Integer.parseInt(comando[2]);
                     listaEncadeada.adicionarNaPosicao(posicao, numero);
                 } else if (nomeAcao.equals("R")) {
-                    listaEncadeada.removerPrimeiraOcorrencia(numero);
+                    listaEncadeada.remover(numero);
                 } else if (nomeAcao.equals("P")) {
                     listaEncadeada.imprimirLista();
+                } else {
+                    System.out.println("Comando inválido: " + linha);
                 }
-            } else {
-                System.out.println("Formato inválido nessa linha: " + line);
             }
+
+            System.out.println("Lista final após o processamento do arquivo " + nomeArquivo + ":");
+            listaEncadeada.imprimirLista();
+            System.out.println();
+
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Arquivo não encontrado: " + nomeArquivo);
         }
-
-        // Imprimindo a lista final
-        listaEncadeada.imprimirLista();
-
-        scanner.close();
     }
 }

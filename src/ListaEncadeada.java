@@ -1,6 +1,26 @@
 public class ListaEncadeada {
     No cabeca;
 
+    public void remover(int numero) {
+        if (cabeca == null) {
+            System.out.println("Lista vazia");
+            return;
+        }
+        if (cabeca.dado == numero) {
+            cabeca = cabeca.proximo;
+            return;
+        }
+        No atual = cabeca;
+        while (atual.proximo != null) {
+            if (atual.proximo.dado == numero) {
+                atual.proximo = atual.proximo.proximo;
+                return;
+            }
+            atual = atual.proximo;
+        }
+        System.out.println("Elemento não encontrado: " + numero);
+    }
+
     public void inserirNoFinal(int dado) {
         No novoNo = new No(dado);
         if (cabeca == null) {
@@ -41,23 +61,5 @@ public class ListaEncadeada {
         No novoNo = new No(dado);
         novoNo.proximo = atual.proximo;
         atual.proximo = novoNo;
-    }
-
-    public void removerPrimeiraOcorrencia(int dado) {
-        if (cabeca == null) {
-            return;
-        }
-        if (cabeca.dado == dado) {
-            cabeca = cabeca.proximo;
-            return;
-        }
-        No atual = cabeca;
-        while (atual.proximo != null) {
-            if (atual.proximo.dado == dado) {
-                atual.proximo = atual.proximo.proximo;
-                return;
-            }
-            atual = atual.proximo;
-        }
     }
 }
